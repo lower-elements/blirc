@@ -66,7 +66,11 @@ class UI:
                             case pygame.K_n: speak(repr(self.current_network), True)
                             case pygame.K_LEFTBRACKET: self.current_network.buffer_idx -= 1
                             case pygame.K_RIGHTBRACKET: self.current_network.buffer_idx += 1
-                            case pygame.K_COMMA: self.current_network.current_buffer.message_idx -= 1
-                            case pygame.K_PERIOD: self.current_network.current_buffer.message_idx += 1
+                            case pygame.K_COMMA:
+                                if buf := self.current_network.current_buffer:
+                                    buf.message_idx -= 1
+                            case pygame.K_PERIOD:
+                                if buf := self.current_network.current_buffer:
+                                    buf.message_idx += 1
 
             pygame.display.update()
