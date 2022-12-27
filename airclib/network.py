@@ -7,6 +7,9 @@ class Network:
         self.irc = miniirc.IRC(cfg.get("host"), cfg.getint("port"), cfg.get("nick"), ident=cfg.get("ident"), realname=cfg.get("realname"), ns_identity=creds)
         self.buffers = {}
 
+    def __del__(self):
+        self.irc.disconnect()
+
     @property
     def name(self):
         try:
