@@ -11,24 +11,28 @@ class UI:
         self.screen = screen
         self.cfg = config.load()
         self.networks = []
-        self._current_network = 0
+        self._network_idx = 0
         self.populate()
 
     @property
-    def current_network(self):
-        return self._current_network
+    def network_idx(self):
+        return self._network_idx
 
-    @current_network.setter
-    def current_network(self, val):
+    @network_idx.setter
+    def network_idx(self, val):
         if len(self.networks) > 0:
-            self._current_network = val % len(self.networks)
-            speak(repr(self.networks[self._current_network]), True)
+            self._network_idx = val % len(self.networks)
+            speak(repr(self.networks[self._network_idx]), True)
+
+    @property
+    def current_network(self):
+        return self.networks[self.network_idx]
 
     def populate(self):
         for name, cfg in self.cfg.items():
             if name == configparser.DEFAULTSECT: continue
             self.networks.append(Network(name, cfg))
-        self.current_network = 0
+        self.network_idx = 0
 
     def main_loop(self):
         while True:
@@ -42,11 +46,12 @@ class UI:
 
                     case pygame.KEYDOWN:
                         match event.key:
-                            case pygame.K_EQUALS: self.current_network += 1
-                            case pygame.K_MINUS: self.current_network -= 1
+                            case pygame.K_EQUALS: self.network_idx += 1
+                            case pygame.K_MINUS: self.network_idx -= 1
                             case x if x in range(pygame.K_1, pygame.K_9 + 1):
                                 num = x - pygame.K_1
-                                if len(self.networks) > num: self.current_network = num
-                            case pygame.K_0: self.current_network = -1
+                                if len(self.networks) > num: self.network_idx = num
+                            case pygame.K_0: self.network_idx = -1
+                            case pygame.K_n: speak(repr(self.current_network), True)
 
             pygame.display.update()
