@@ -44,5 +44,9 @@ class UI:
                         match event.key:
                             case pygame.K_EQUALS: self.current_network += 1
                             case pygame.K_MINUS: self.current_network -= 1
+                            case x if x in range(pygame.K_1, pygame.K_9 + 1):
+                                num = x - pygame.K_1
+                                if len(self.networks) > num: self.current_network = num
+                            case pygame.K_0: self.current_network = -1
 
             pygame.display.update()
