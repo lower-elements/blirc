@@ -1,15 +1,20 @@
 import miniirc
 
+from .buffer import Buffer
+from .message import Message
 from .speech import speak
 
 class Network:
     def __init__(self, name, cfg):
-        self._name = name
-        creds = (cfg.get("nick"), cfg.get("password")) if "password" in cfg else None
-        self.irc = miniirc.IRC(cfg.get("host"), cfg.getint("port"), cfg.get("nick"), ident=cfg.get("ident"), realname=cfg.get("realname"), ns_identity=creds)
         self.buffers = {}
         self.buffer_list = []
         self._buffer_idx = 0
+        self._name = name
+
+        creds = (cfg.get("nick"), cfg.get("password")) if "password" in cfg else None
+        self.irc = miniirc.IRC(cfg.get("host"), cfg.getint("port"), cfg.get("nick"), channels=cfg.get("channels", None), ident=cfg.get("ident"), realname=cfg.get("realname"), ns_identity=creds)
+
+        self.irc.CmdHandler("PRIVMSG", "NOTICE", "JOIN", "PART", colon=False)(self.on_message)
 
     def __del__(self):
         self.irc.disconnect()
@@ -40,6 +45,20 @@ class Network:
             return self.irc.isupport["NETWORK"]
         except KeyError:
             return self._name
+
+    def buffer(self, name):
+        try:
+            return self.buffers[name]
+        except KeyError:
+            self.buffers[name] = Buffer()
+            self.buffer_list.append(name)
+            speak(f"New buffer: {name}", True)
+            if len(self.buffer_list) == 1:
+                self.buffer_idx = 0
+            return self.buffers[name]
+
+    def on_message(self, irc, command, hostmask, args):
+        self.buffer(args[0]).append(Message(hostmask, command, args))
 
     def __repr__(self):
         match self.irc.connected:

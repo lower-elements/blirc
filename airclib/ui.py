@@ -53,5 +53,9 @@ class UI:
                                 if len(self.networks) > num: self.network_idx = num
                             case pygame.K_0: self.network_idx = -1
                             case pygame.K_n: speak(repr(self.current_network), True)
+                            case pygame.K_LEFTBRACKET: self.current_network.buffer_idx -= 1
+                            case pygame.K_RIGHTBRACKET: self.current_network.buffer_idx += 1
+                            case pygame.K_COMMA: self.current_network.current_buffer.message_idx -= 1
+                            case pygame.K_PERIOD: self.current_network.current_buffer.message_idx += 1
 
             pygame.display.update()
