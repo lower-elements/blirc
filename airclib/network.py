@@ -57,8 +57,18 @@ class Network:
                 self.buffer_idx = 0
             return self.buffers[name]
 
+    def map_buffer_name(self, target, nick):
+        match target:
+            case "*":
+                return "Server messages"
+            case self.irc.current_nick:
+                return nick
+            case _:
+                return target
+
     def on_message(self, irc, command, hostmask, args):
-        self.buffer(args[0]).append(Message(hostmask, command, args))
+        buf = self.map_buffer_name(args[0], hostmask[0])
+        self.buffer(buf).append(Message(hostmask, command, args))
 
     def __repr__(self):
         match self.irc.connected:
