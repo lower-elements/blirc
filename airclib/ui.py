@@ -54,8 +54,15 @@ class UI:
                             case pygame.K_MINUS: self.network_idx -= 1
                             case x if x in range(pygame.K_1, pygame.K_9 + 1):
                                 num = x - pygame.K_1
-                                if len(self.networks) > num: self.network_idx = num
-                            case pygame.K_0: self.network_idx = -1
+                                if event.mod & pygame.KMOD_CTRL and len(self.networks) > num:
+                                    self.network_idx = num
+                                elif len(self.current_network.buffer_list) > num:
+                                    self.current_network.buffer_idx = num
+                            case pygame.K_0:
+                                if event.mod & pygame.KMOD_CTRL:
+                                    self.network_idx = -1
+                                else:
+                                    self.current_network.buffer_idx = -1
                             case pygame.K_n: speak(repr(self.current_network), True)
                             case pygame.K_LEFTBRACKET: self.current_network.buffer_idx -= 1
                             case pygame.K_RIGHTBRACKET: self.current_network.buffer_idx += 1
