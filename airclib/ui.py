@@ -35,7 +35,14 @@ class UI:
             events = pygame.event.get()
             for event in events:
                 match event.type:
+
                     case pygame.QUIT:
                         pygame.quit()
                         sys.exit()
+
+                    case pygame.KEYDOWN:
+                        match event.key:
+                            case pygame.K_EQUALS: self.current_network += 1
+                            case pygame.K_MINUS: self.current_network -= 1
+
             pygame.display.update()
