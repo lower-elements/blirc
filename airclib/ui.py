@@ -1,10 +1,11 @@
 import configparser
+import platform
 import pygame
 import sys
 
 from . import config
 from .network import Network
-from .speech import speak
+from . import speech
 
 class UI:
     def __init__(self, screen):
@@ -22,7 +23,7 @@ class UI:
     def network_idx(self, val):
         if len(self.networks) > 0:
             self._network_idx = val % len(self.networks)
-            speak(repr(self.networks[self._network_idx]), True)
+            speech.speak(repr(self.networks[self._network_idx]), True)
 
     @property
     def current_network(self):
@@ -45,6 +46,9 @@ class UI:
                         sys.exit()
 
                     case pygame.KEYDOWN:
+                        if platform.system() == "Linux" and event.mod & pygame.KMOD_CTRL:
+                            speech.linux_speaker.cancel()
+
                         match event.key:
                             case pygame.K_EQUALS: self.network_idx += 1
                             case pygame.K_MINUS: self.network_idx -= 1
