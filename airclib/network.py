@@ -53,8 +53,6 @@ class Network:
             self.buffers[name] = Buffer()
             self.buffer_list.append(name)
             speak(f"New buffer: {name}", True)
-            if len(self.buffer_list) == 1:
-                self.buffer_idx = 0
             return self.buffers[name]
 
     def map_buffer_name(self, target, nick):
