@@ -1,14 +1,38 @@
 import miniirc
 
+from .speech import speak
+
 class Network:
     def __init__(self, name, cfg):
         self._name = name
         creds = (cfg.get("nick"), cfg.get("password")) if "password" in cfg else None
         self.irc = miniirc.IRC(cfg.get("host"), cfg.getint("port"), cfg.get("nick"), ident=cfg.get("ident"), realname=cfg.get("realname"), ns_identity=creds)
         self.buffers = {}
+        self.buffer_list = []
+        self._buffer_idx = 0
 
     def __del__(self):
         self.irc.disconnect()
+
+    @property
+    def buffer_idx(self):
+        return self._buffer_idx
+
+    @buffer_idx.setter
+    def buffer_idx(self, val):
+        if len(self.buffer_list) > 0:
+            self._buffer_idx = val % len(self.buffer_list)
+            speak(self.buffer_list[self._buffer_idx], True)
+
+    @property
+    def current_buffer(self):
+        if len(self.buffer_list) > self.buffer_idx:
+            try:
+                return self.buffers[self.buffer_list[self.buffer_idx]]
+            except KeyError:
+                return None
+        else:
+            return None
 
     @property
     def name(self):
