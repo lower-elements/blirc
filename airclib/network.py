@@ -5,7 +5,7 @@ from .message import Message
 from .speech import speak
 
 class Network:
-    def __init__(self, name, cfg):
+    def __init__(self, name, cfg, exec):
         self.active = False
         self.buffers = {}
         self.buffer_list = []
@@ -13,7 +13,7 @@ class Network:
         self._name = name
 
         creds = (cfg.get("nick"), cfg.get("password")) if "password" in cfg else None
-        self.irc = miniirc.IRC(cfg.get("host"), cfg.getint("port"), cfg.get("nick"), channels=cfg.get("channels", None), ident=cfg.get("ident"), realname=cfg.get("realname"), ns_identity=creds)
+        self.irc = miniirc.IRC(cfg.get("host"), cfg.getint("port"), cfg.get("nick"), channels=cfg.get("channels", None), ident=cfg.get("ident"), realname=cfg.get("realname"), ns_identity=creds, executor=exec)
 
         self.irc.CmdHandler("PRIVMSG", "NOTICE", "JOIN", "PART", "MODE", colon=False)(self.on_message)
 

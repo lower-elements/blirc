@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor
 import configparser
 import platform
 import pygame
@@ -11,6 +12,7 @@ class UI:
     def __init__(self, screen):
         self.screen = screen
         self.cfg = config.load()
+        self.exec = ThreadPoolExecutor(thread_name_prefix="irc")
         self.entering_message = False
         self.message = ""
         self.networks = []
@@ -37,7 +39,7 @@ class UI:
     def populate(self):
         for name, cfg in self.cfg.items():
             if name == configparser.DEFAULTSECT: continue
-            self.networks.append(Network(name, cfg))
+            self.networks.append(Network(name, cfg, self.exec))
         self.network_idx = 0
 
     def main_loop(self):
