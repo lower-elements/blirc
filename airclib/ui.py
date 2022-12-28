@@ -69,6 +69,8 @@ class UI:
                                 case pygame.K_RETURN:
                                     buf_name = self.current_network.buffer_list[self.current_network.buffer_idx]
                                     self.current_network.irc.msg(buf_name, self.message)
+                                    self.message = ""
+                                    self.entering_message = False
 
                         else:
                             match event.key:
