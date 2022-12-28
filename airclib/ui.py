@@ -75,7 +75,10 @@ class UI:
                                     self.message = self.message[:-1]
                                     speech.speak(f"{c} deleted", True)
                                 case pygame.K_RETURN:
-                                    self.current_network.msg_current(self.message)
+                                    if self.message.startswith("/me "):
+                                        self.current_network.me_current(self.message[4:])
+                                    else:
+                                        self.current_network.msg_current(self.message)
                                     self.message = ""
                                     self.entering_message = False
 
