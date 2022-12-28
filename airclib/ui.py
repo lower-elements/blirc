@@ -24,8 +24,11 @@ class UI:
     @network_idx.setter
     def network_idx(self, val):
         if len(self.networks) > 0:
-            self._network_idx = val % len(self.networks)
-            speech.speak(repr(self.networks[self._network_idx]), True)
+            new_idx = val % len(self.networks)
+            self.current_network.active = False
+            self._current_idx = new_idx
+            self.current_network.active = True
+            speech.speak(repr(self.current_network), True)
 
     @property
     def current_network(self):

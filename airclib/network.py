@@ -6,6 +6,7 @@ from .speech import speak
 
 class Network:
     def __init__(self, name, cfg):
+        self.active = False
         self.buffers = {}
         self.buffer_list = []
         self._buffer_idx = 0
@@ -46,6 +47,10 @@ class Network:
         except KeyError:
             return self._name
 
+    @property
+    def current_buffer_name(self):
+        return self.buffer_list[self.buffer_idx]
+
     def buffer(self, name):
         try:
             return self.buffers[name]
@@ -66,7 +71,10 @@ class Network:
 
     def on_message(self, irc, command, hostmask, args):
         buf = self.map_buffer_name(args[0], hostmask[0])
-        self.buffer(buf).append(Message(hostmask, command, args))
+        msg = Message(hostmask, command, args)
+        self.buffer(buf).append(msg)
+        if self.active and self.current_buffer_name == buf:
+            speak(repr(msg), True)
 
     def __repr__(self):
         match self.irc.connected:
