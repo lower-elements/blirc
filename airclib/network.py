@@ -63,7 +63,7 @@ class Network:
     def map_buffer_name(self, target, nick):
         match target:
             case "*":
-                return "Server messages"
+                return "Server Messages"
             case self.irc.current_nick:
                 return nick
             case _:
@@ -75,6 +75,12 @@ class Network:
         self.buffer(buf).append(msg)
         if self.active and self.current_buffer_name == buf:
             speak(repr(msg), True)
+
+    def msg_current(self, *args):
+        if self.current_buffer_name != "Server Messages":
+            self.irc.msg(self.current_buffer_name, *args)
+        else:
+            speak("Buffer is read-only", True)
 
     def __repr__(self):
         match self.irc.connected:
