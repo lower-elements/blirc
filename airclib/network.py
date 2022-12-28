@@ -79,10 +79,7 @@ class Network:
     def msg_current(self, *args):
         if self.current_buffer_name != "Server Messages":
             self.irc.msg(self.current_buffer_name, *args)
-            if "echo-message" in self.irc.active_caps:
-                print("Not echoing locally")
-            else:
-                print("Echoing locally")
+            if "echo-message" not in self.irc.active_caps:
                 msg = Message((self.irc.current_nick, self.irc.ident, self.irc.realname), "PRIVMSG", args)
                 self.current_buffer.append(msg)
                 speak(repr(msg), True)
