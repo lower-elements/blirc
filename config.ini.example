@@ -1,0 +1,9 @@
+[DEFAULT]
+nick=awesomesource123
+ident=bob
+realname=Bob the Builder
+
+[LiberaChat]
+host=irc.libera.chat
+password=hunter2
+channels=#blindcomputing,#archlinux
