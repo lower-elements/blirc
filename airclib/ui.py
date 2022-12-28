@@ -98,14 +98,22 @@ class UI:
                                     else:
                                         self.current_network.buffer_idx = -1
 
-                                case pygame.K_LEFTBRACKET: self.current_network.buffer_idx -= 1
-                                case pygame.K_RIGHTBRACKET: self.current_network.buffer_idx += 1
-                                case pygame.K_COMMA:
+                                case pygame.K_LEFTBRACKET if not event.mod&pygame.KMOD_SHIFT: self.current_network.buffer_idx -= 1
+                                case pygame.K_LEFTBRACKET: self.current_network.buffer_idx = 0
+                                case pygame.K_RIGHTBRACKET if not event.mod&pygame.KMOD_SHIFT: self.current_network.buffer_idx += 1
+                                case pygame.K_RIGHTBRACKET: self.current_network.buffer_idx = len(self.current_network.buffer_list)-1
+                                case pygame.K_COMMA if not event.mod&pygame.KMOD_SHIFT:
                                     if buf := self.current_network.current_buffer:
                                         buf.message_idx -= 1
-                                case pygame.K_PERIOD:
+                                case pygame.K_COMMA:
+                                    if buf := self.current_network.current_buffer:
+                                        buf.message_idx = 0
+                                case pygame.K_PERIOD if not event.mod&pygame.KMOD_SHIFT:
                                     if buf := self.current_network.current_buffer:
                                         buf.message_idx += 1
+                                case pygame.K_PERIOD:
+                                    if buf := self.current_network.current_buffer:
+                                        buf.message_idx = len(self.current_network.current_buffer.messages)-1
 
                                 case pygame.K_n:
                                     speech.speak(repr(self.current_network), True)
