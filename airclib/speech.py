@@ -25,5 +25,5 @@ def speak (text, interupt = True):
             linux_speaker.speak(text)
 
     elif platform.system() == "Darwin":
-        speaker.set ("rate", 600)
+        speaker.set ("rate", 300)
         speaker.speak (text, interupt)
