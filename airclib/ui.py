@@ -51,6 +51,9 @@ class UI:
                         text = event.text
                         speech.speak(text, True)
                         self.message += text
+                    case pygame.TEXTINPUT if not self.entering_message and event.text == "/":
+                        self.entering_message = True
+                        speech.speak("Message: ", True)
 
                     case pygame.KEYDOWN:
                         if platform.system() == "Linux" and event.mod & pygame.KMOD_CTRL:
@@ -74,9 +77,6 @@ class UI:
 
                         else:
                             match event.key:
-                                case pygame.K_SLASH:
-                                    speech.speak("Message: ", True)
-                                    self.entering_message = True
                                 case pygame.K_EQUALS: self.network_idx += 1
                                 case pygame.K_MINUS: self.network_idx -= 1
                                 case x if x in range(pygame.K_1, pygame.K_9 + 1):
