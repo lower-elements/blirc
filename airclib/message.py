@@ -15,6 +15,16 @@ class Message:
                     return f"{self.hostmask[0]} quit IRC - {self.args[0]}"
                 else:
                     return f"{self.hostmask[0]} quit IRC"
+            case "PRIVMSG" | "NOTICE" if self.args[-1].startswith('\x01'):
+                # CTCP
+                ctcp = self.args[-1].strip('\x01')
+                idx = ctcp.index(' ')
+                command = ctcp[:idx]
+                match command:
+                    case "ACTION":
+                        return f"* {self.hostmask[0]} {ctcp[idx+1:]}"
+                    case _:
+                        return f"{self.hostmask[0]}: CTCP {ctcp}"
             case "PRIVMSG":
                 return f"{self.hostmask[0]}: {self.args[-1]}"
             case "NOTICE":
