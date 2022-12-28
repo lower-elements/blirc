@@ -13,7 +13,7 @@ class Network:
         self._name = name
 
         creds = (cfg.get("nick"), cfg.get("password")) if "password" in cfg else None
-        self.irc = miniirc.IRC(cfg.get("host"), cfg.getint("port"), cfg.get("nick"), channels=cfg.get("channels", None), ident=cfg.get("ident"), realname=cfg.get("realname"), ns_identity=creds, executor=exec)
+        self.irc = miniirc.IRC(cfg.get("host"), cfg.getint("port"), cfg.get("nick"), channels=cfg.get("channels", None), ident=cfg.get("ident"), realname=cfg.get("realname"), ns_identity=creds, ircv3_caps={"echo-message"}, executor=exec)
 
         self.irc.CmdHandler("PRIVMSG", "NOTICE", "JOIN", "PART", "MODE", colon=False)(self.on_message)
 
@@ -79,6 +79,13 @@ class Network:
     def msg_current(self, *args):
         if self.current_buffer_name != "Server Messages":
             self.irc.msg(self.current_buffer_name, *args)
+            if "echo-message" in self.irc.active_caps:
+                print("Not echoing locally")
+            else:
+                print("Echoing locally")
+                msg = Message((self.irc.current_nick, self.irc.ident, self.irc.realname), "PRIVMSG", args)
+                self.current_buffer.append(msg)
+                speak(repr(msg), True)
         else:
             speak("Buffer is read-only", True)
 
