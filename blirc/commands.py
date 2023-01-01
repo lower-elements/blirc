@@ -12,6 +12,9 @@ class CommandProcessor:
             command, *args = msg[1:].split(maxsplit=1)
             args = args[0] if args else None
             match command.lower():
+                case "ctcp" if args is not None:
+                    ctcp_command, *ctcp_args = args.split(maxsplit=1)
+                    ui.current_network.ctcp_current(ctcp_command.upper(), *ctcp_args)
                 case "me":
                     ui.current_network.me_current(args)
                 case "quit":
