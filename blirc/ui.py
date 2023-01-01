@@ -5,6 +5,7 @@ import pygame
 import sys
 
 from . import config
+from .commands import CommandProcessor
 from .network import Network
 from . import speech
 
@@ -13,8 +14,13 @@ class UI:
         self.screen = screen
         self.cfg = config.load()
         self.exec = ThreadPoolExecutor(thread_name_prefix="irc")
+        self.cmd_proc = CommandProcessor()
+
+        # UI state
         self.entering_message = False
         self.message = ""
+
+        # IRC state
         self.networks = []
         self._network_idx = 0
         self.populate()
@@ -87,10 +93,7 @@ class UI:
                                     self.message = self.message[:-1]
                                     speech.speak(f"{c} deleted", True)
                                 case pygame.K_RETURN:
-                                    if self.message.startswith("/me "):
-                                        self.current_network.me_current(self.message[4:])
-                                    else:
-                                        self.current_network.msg_current(self.message)
+                                    self.cmd_proc.perform(self.message, self)
                                     self.message = ""
                                     self.entering_message = False
 
