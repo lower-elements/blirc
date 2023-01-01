@@ -45,7 +45,7 @@ class UI:
         if len(self.networks) > 0:
             new_idx = val % len(self.networks)
             self.current_network.active = False
-            self._current_idx = new_idx
+            self._network_idx = new_idx
             self.current_network.active = True
             speech.speak(repr(self.current_network), True)
 
