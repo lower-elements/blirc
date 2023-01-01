@@ -1,4 +1,5 @@
 import miniirc
+import pygame
 
 from .buffer import Buffer
 from .message import Message
@@ -122,3 +123,29 @@ class Network:
             case False: s = "[Connecting] "
             case _: s = "[Disconnected] "
         return s + f"{self.name} ({self.irc.ip})"
+
+    def handle_event(self, event):
+        match event.key:
+            case pygame.K_LEFTBRACKET if not event.mod&pygame.KMOD_SHIFT:
+                self.buffer_idx -= 1
+            case pygame.K_LEFTBRACKET:
+                self.buffer_idx = 0
+            case pygame.K_RIGHTBRACKET if not event.mod&pygame.KMOD_SHIFT:
+                self.buffer_idx += 1
+            case pygame.K_RIGHTBRACKET:
+                self.buffer_idx = -1
+
+            case x if x in range(pygame.K_1, pygame.K_9 + 1):
+                num = x - pygame.K_1
+                if len(self.buffer_list) > num:
+                    self.buffer_idx = num
+            case pygame.K_0:
+                self.buffer_idx = -1
+
+            case pygame.K_n:
+                speak(repr(self), True)
+            case pygame.K_b:
+                speak(self.buffer_list[self.buffer_idx], True)
+
+            case _ if buf := self.current_buffer:
+                buf.handle_event(event)

@@ -1,3 +1,5 @@
+import pygame
+
 from .speech import speak
 
 class Buffer:
@@ -22,3 +24,14 @@ class Buffer:
 
     def append(self, message):
         self.messages.append(message)
+
+    def handle_event(self, event):
+        match event.key:
+            case pygame.K_COMMA if not event.mod&pygame.KMOD_SHIFT:
+                    self.message_idx -= 1
+            case pygame.K_COMMA:
+                   self.message_idx = 0
+            case pygame.K_PERIOD if not event.mod&pygame.KMOD_SHIFT:
+                    self.message_idx += 1
+            case pygame.K_PERIOD:
+                    self.message_idx = -1

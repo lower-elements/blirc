@@ -63,76 +63,55 @@ class UI:
         while True:
             events = pygame.event.get()
             for event in events:
-                match event.type:
-
-                    case pygame.QUIT:
-                        self.shutdown()
-                        pygame.quit()
-                        sys.exit()
-
-                    case pygame.TEXTINPUT if self.entering_message:
-                        text = event.text
-                        speech.speak(text, True)
-                        self.message += text
-                    case pygame.TEXTINPUT if not self.entering_message and event.text == "/":
-                        self.entering_message = True
-                        speech.speak("Message: ", True)
-
-                    case pygame.KEYDOWN:
-                        if platform.system() == "Linux" and event.mod & pygame.KMOD_CTRL:
-                            speech.linux_speaker.cancel()
-
-                        if self.entering_message:
-                            match event.key:
-                                case pygame.K_ESCAPE:
-                                    self.entering_message = False
-                                    self.message = ""
-                                    speech.speak("Cancelled", True)
-                                case pygame.K_BACKSPACE if len(self.message) > 0:
-                                    c = self.message[-1]
-                                    self.message = self.message[:-1]
-                                    speech.speak(f"{c} deleted", True)
-                                case pygame.K_RETURN:
-                                    self.cmd_proc.perform(self.message, self)
-                                    self.message = ""
-                                    self.entering_message = False
-
-                        else:
-                            match event.key:
-                                case pygame.K_EQUALS: self.network_idx += 1
-                                case pygame.K_MINUS: self.network_idx -= 1
-                                case x if x in range(pygame.K_1, pygame.K_9 + 1):
-                                    num = x - pygame.K_1
-                                    if event.mod & pygame.KMOD_CTRL and len(self.networks) > num:
-                                        self.network_idx = num
-                                    elif len(self.current_network.buffer_list) > num:
-                                        self.current_network.buffer_idx = num
-                                case pygame.K_0:
-                                    if event.mod & pygame.KMOD_CTRL:
-                                        self.network_idx = -1
-                                    else:
-                                        self.current_network.buffer_idx = -1
-
-                                case pygame.K_LEFTBRACKET if not event.mod&pygame.KMOD_SHIFT: self.current_network.buffer_idx -= 1
-                                case pygame.K_LEFTBRACKET: self.current_network.buffer_idx = 0
-                                case pygame.K_RIGHTBRACKET if not event.mod&pygame.KMOD_SHIFT: self.current_network.buffer_idx += 1
-                                case pygame.K_RIGHTBRACKET: self.current_network.buffer_idx = len(self.current_network.buffer_list)-1
-                                case pygame.K_COMMA if not event.mod&pygame.KMOD_SHIFT:
-                                    if buf := self.current_network.current_buffer:
-                                        buf.message_idx -= 1
-                                case pygame.K_COMMA:
-                                    if buf := self.current_network.current_buffer:
-                                        buf.message_idx = 0
-                                case pygame.K_PERIOD if not event.mod&pygame.KMOD_SHIFT:
-                                    if buf := self.current_network.current_buffer:
-                                        buf.message_idx += 1
-                                case pygame.K_PERIOD:
-                                    if buf := self.current_network.current_buffer:
-                                        buf.message_idx = len(self.current_network.current_buffer.messages)-1
-
-                                case pygame.K_n:
-                                    speech.speak(repr(self.current_network), True)
-                                case pygame.K_b:
-                                    speech.speak(self.current_network.buffer_list[self.current_network.buffer_idx], True)
+                self.handle_event(event)
 
             pygame.display.update()
+
+    def handle_event(self, event):
+        match event.type:
+
+            case pygame.QUIT:
+                self.shutdown()
+                pygame.quit()
+                sys.exit()
+
+            case pygame.TEXTINPUT if self.entering_message:
+                text = event.text
+                speech.speak(text, True)
+                self.message += text
+            case pygame.TEXTINPUT if not self.entering_message and event.text == "/":
+                self.entering_message = True
+                speech.speak("Message: ", True)
+
+            case pygame.KEYDOWN:
+                if platform.system() == "Linux" and event.mod & pygame.KMOD_CTRL:
+                    speech.linux_speaker.cancel()
+
+                if self.entering_message:
+                    match event.key:
+                        case pygame.K_ESCAPE:
+                            self.entering_message = False
+                            self.message = ""
+                            speech.speak("Cancelled", True)
+                        case pygame.K_BACKSPACE if len(self.message) > 0:
+                            c = self.message[-1]
+                            self.message = self.message[:-1]
+                            speech.speak(f"{c} deleted", True)
+                        case pygame.K_RETURN:
+                            self.cmd_proc.perform(self.message, self)
+                            self.message = ""
+                            self.entering_message = False
+
+                else:
+                    match event.key:
+                        case pygame.K_EQUALS: self.network_idx += 1
+                        case pygame.K_MINUS: self.network_idx -= 1
+                        case x if event.mod & pygame.KMOD_CTRL and x in range(pygame.K_1, pygame.K_9 + 1):
+                            num = x - pygame.K_1
+                            if len(self.networks) > num:
+                                self.network_idx = num
+                        case pygame.K_0 if event.mod & pygame.KMOD_CTRL:
+                            self.network_idx = -1
+
+                        case _:
+                            self.current_network.handle_event(event)
