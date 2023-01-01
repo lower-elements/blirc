@@ -15,6 +15,10 @@ class CommandProcessor:
                 case "ctcp" if args is not None:
                     ctcp_command, *ctcp_args = args.split(maxsplit=1)
                     ui.current_network.ctcp_current(ctcp_command.upper(), *ctcp_args)
+                case "join" if args is not None:
+                    # maxsplit=2 is so that the two-argument form, with a channel key, works
+                    join_args = args.split(maxsplit=2)
+                    ui.current_network.irc.send("JOIN", *join_args)
                 case "me":
                     ui.current_network.me_current(args)
                 case "quit":
