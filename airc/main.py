@@ -1,7 +1,7 @@
 import pygame
 
-from airclib import consts
-from airclib.ui import UI
+from . import consts
+from .ui import UI
 
 def main():
     pygame.init()

@@ -1,0 +1,37 @@
+[project]
+name = "airc"
+version = "0.1.0"
+authors = [
+  { name="Michael Connor Buchan", email="mikey@blindcomputing.org" },
+]
+description = "Your favourite blindy IRC client"
+readme = "README.md"
+requires-python = ">=3.6"
+keywords = ["irc", "self-voicing", "blind", "accessible"]
+license = { file = "LICENSE" }
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Communications :: Chat :: Internet Relay Chat",
+]
+
+dependencies = [
+    "cytolk~=0.1.12; sys_platform=='win32'",
+    "miniirc~=1.9.1",
+    "pygame~=2.1.2",
+    "pyobjc~=9.0.1; sys_platform=='darwin'",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/lower-elements/airc"
+"Bug Tracker" = "https://github.com/lower-elements/airc/issues"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project.gui-scripts]
+airc = "airc.main:main"
