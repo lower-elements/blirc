@@ -25,6 +25,9 @@ class CommandProcessor:
                     speak("/join requires at least 1 argument", True)
                 case "me":
                     ui.current_network.me_current(args)
+                case "notice":
+                    notice_msg = args if args else ''
+                    ui.current_network.notice_current(notice_msg)
                 case "quit":
                     ui.shutdown()
                     pygame.quit()

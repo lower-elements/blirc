@@ -86,6 +86,16 @@ class Network:
         else:
             speak("Buffer is read-only", True)
 
+    def notice_current(self, *args):
+        if self.current_buffer_name != "Server Messages":
+            self.irc.notice(self.current_buffer_name, *args)
+            if "echo-message" not in self.irc.active_caps:
+                msg = Message((self.irc.current_nick, self.irc.ident, self.irc.realname), "PRIVMSG", args)
+                self.current_buffer.append(msg)
+                speak(repr(msg), True)
+        else:
+            speak("Buffer is read-only", True)
+
     def me_current(self, *args):
         if self.current_buffer_name != "Server Messages":
             self.irc.me(self.current_buffer_name, *args)
