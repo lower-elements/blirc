@@ -19,6 +19,17 @@ class UI:
         self._network_idx = 0
         self.populate()
 
+    def __del__(self):
+        self.shutdown()
+
+    def shutdown(self):
+        for network in self.networks:
+            network.irc.disconnect()
+        for network in self.networks:
+            network.irc.wait_until_disconnected()
+        self.exec.shutdown()
+        self.networks = []
+
     @property
     def network_idx(self):
         return self._network_idx
@@ -49,6 +60,7 @@ class UI:
                 match event.type:
 
                     case pygame.QUIT:
+                        self.shutdown()
                         pygame.quit()
                         sys.exit()
 
