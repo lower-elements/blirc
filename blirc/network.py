@@ -65,6 +65,8 @@ class Network:
         match target:
             case "*":
                 return "Server Messages"
+            case self.irc.current_nick if nick == self.irc.ip:
+                return "Server Messages"
             case self.irc.current_nick:
                 return nick
             case _:
