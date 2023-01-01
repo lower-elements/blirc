@@ -44,14 +44,21 @@ class UI:
     def network_idx(self, val):
         if len(self.networks) > 0:
             new_idx = val % len(self.networks)
-            self.current_network.active = False
+            self.networks[self._network_idx].active = False
             self._network_idx = new_idx
-            self.current_network.active = True
+            self.networks[new_idx].active = True
             speech.speak(repr(self.current_network), True)
+        else:
+            speech.speak("No networks", True)
 
     @property
     def current_network(self):
-        return self.networks[self.network_idx]
+        if len(self.networks) > self.network_idx:
+            return self.networks[self.network_idx]
+
+    def if_has_network(self, f):
+        if net := self.current_network: return f(net)
+        else: speech.speak("No networks", True)
 
     def populate(self):
         for name, cfg in self.cfg.items():
@@ -113,5 +120,5 @@ class UI:
                         case pygame.K_0 if event.mod & pygame.KMOD_CTRL:
                             self.network_idx = -1
 
-                        case _:
-                            self.current_network.handle_event(event)
+                        case _ if network := self.current_network:
+                            network.handle_event(event)
