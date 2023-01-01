@@ -12,7 +12,8 @@ elif platform.system() == "Darwin":
 elif platform.system() == "Linux":
     import speechd
     from time import perf_counter
-    linux_speaker = speechd.Speaker("airc")
+    from . import consts
+    linux_speaker = speechd.Speaker(consts.NAME)
     linux_speaker.set_priority(speechd.Priority.TEXT)
     last = perf_counter()
 

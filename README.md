@@ -1,11 +1,10 @@
-# Airc - an Audio IRC Client
+# Blirc - a Self-Voicing IRC Client
 
-Airc is a self-voicing IRC client, designed to be used by blind / visually impaired IRC users.
+Blirc is a self-voicing IRC client, designed to be used by blind / visually impaired IRC users.
 
 ## License
 
-
-    Airc: Your favourite blindy IRC client
+    Blirc: Your favourite blindy IRC client
     Copyright (C) 2022-2023  Michael Connor Buchan <mikey@blindcomputing.org>
 
     This program is free software: you can redistribute it and/or modify
