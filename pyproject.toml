@@ -6,7 +6,7 @@ authors = [
 ]
 description = "Your favourite blindy IRC client"
 readme = "README.md"
-requires-python = ">=3.6"
+requires-python = ">=3.10"
 keywords = ["irc", "self-voicing", "blind", "accessible"]
 license = { file = "LICENSE" }
 
