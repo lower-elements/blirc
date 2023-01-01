@@ -1,3 +1,6 @@
+import pygame
+import sys
+
 from .speech import speak
 
 class CommandProcessor:
@@ -11,6 +14,10 @@ class CommandProcessor:
             match command.lower():
                 case "me":
                     ui.current_network.me_current(args)
+                case "quit":
+                    ui.shutdown()
+                    pygame.quit()
+                    sys.exit()
                 case command:
                     speak(f"Unknown command {command}", True)
         else:
