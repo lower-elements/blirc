@@ -13,14 +13,21 @@ class Buffer:
 
     @message_idx.setter
     def message_idx(self, val):
-        if len(self.messages) == 1:
-                speak(repr(self.messages[0]), True)
-        elif len(self.messages) > 0:
+        if len(self.messages) > 0:
             if val < 0: self._message_idx = 0
             elif val >= len(self.messages): self._message_idx = len(self.messages) - 1
             else:
                 self._message_idx = val
                 speak(repr(self.messages[val]), True)
+
+    @property
+    def current_message(self):
+        if len(self.messages) > self.message_idx:
+            return self.messages[self.message_idx]
+
+    def with_current_message(self, f):
+        if msg := self.current_message: return f(msg)
+        else: speak("Buffer is empty", True)
 
     def append(self, message):
         self.messages.append(message)
@@ -35,3 +42,6 @@ class Buffer:
                     self.message_idx += 1
             case pygame.K_PERIOD:
                     self.message_idx = -1
+
+            case pygame.K_m:
+                self.with_current_message(lambda msg: speak(repr(msg), True))
