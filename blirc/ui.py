@@ -28,9 +28,9 @@ class UI:
     def __del__(self):
         self.shutdown()
 
-    def shutdown(self):
+    def shutdown(self, *, quit_msg=None):
         for network in self.networks:
-            network.irc.disconnect()
+            network.irc.disconnect(msg=quit_msg)
         for network in self.networks:
             network.irc.wait_until_disconnected()
         self.exec.shutdown()

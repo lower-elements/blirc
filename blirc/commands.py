@@ -29,7 +29,7 @@ class CommandProcessor:
                     notice_msg = args if args else ''
                     ui.with_current_network(lambda net: net.notice_current(notice_msg))
                 case "quit":
-                    ui.shutdown()
+                    ui.shutdown(quit_msg=args)
                     pygame.quit()
                     sys.exit()
                 case command:
