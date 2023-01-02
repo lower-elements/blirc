@@ -4,6 +4,18 @@ class Message:
         self.command = command
         self.args = args
 
+    @staticmethod
+    def synthesize_privmsg(irc, *args):
+        return Message((irc.current_nick, irc.ident, irc.realname), "PRIVMSG", args)
+
+    @staticmethod
+    def synthesize_notice(irc, *args):
+        return Message((irc.current_nick, irc.ident, irc.realname), "NOTICE", args)
+
+    @staticmethod
+    def synthesize_ctcp(irc, *args):
+        return Message((irc.current_nick, irc.ident, irc.realname), "PRIVMSG", [f"\x01{' '.join(args)}\x01"])
+
     def __repr__(self):
         match self.command:
             case "JOIN":

@@ -83,7 +83,7 @@ class Network:
         if self.current_buffer_name != "Server Messages":
             self.irc.msg(self.current_buffer_name, *args)
             if "echo-message" not in self.irc.active_caps:
-                msg = Message((self.irc.current_nick, self.irc.ident, self.irc.realname), "PRIVMSG", args)
+                msg = Message.synthesize_privmsg(self.irc, self.current_buffer_name, *args)
                 self.current_buffer.append(msg)
                 speak(repr(msg), True)
         else:
@@ -93,7 +93,7 @@ class Network:
         if self.current_buffer_name != "Server Messages":
             self.irc.notice(self.current_buffer_name, *args)
             if "echo-message" not in self.irc.active_caps:
-                msg = Message((self.irc.current_nick, self.irc.ident, self.irc.realname), "PRIVMSG", args)
+                msg = Message.synthesize_notice(self.irc, self.current_buffer_name, *args)
                 self.current_buffer.append(msg)
                 speak(repr(msg), True)
         else:
@@ -103,7 +103,7 @@ class Network:
         if self.current_buffer_name != "Server Messages":
             self.irc.me(self.current_buffer_name, *args)
             if "echo-message" not in self.irc.active_caps:
-                msg = Message((self.irc.current_nick, self.irc.ident, self.irc.realname), "PRIVMSG", [f"\x01ACTION {' '.join(args)}\x01"])
+                msg = Message.synthesize_ctcp(self.irc, "ACTION", *args)
                 self.current_buffer.append(msg)
                 speak(repr(msg), True)
         else:
@@ -113,7 +113,7 @@ class Network:
         if self.current_buffer_name != "Server Messages":
             self.irc.ctcp(self.current_buffer_name, *args)
             if "echo-message" not in self.irc.active_caps:
-                msg = Message((self.irc.current_nick, self.irc.ident, self.irc.realname), "PRIVMSG", [f"\x01{' '.join(args)}\x01"])
+                msg = Message.synthesize_ctcp(self.irc, *args)
                 self.current_buffer.append(msg)
                 speak(repr(msg), True)
         else:
