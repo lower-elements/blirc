@@ -18,7 +18,7 @@ class Network:
                             ident=cfg.get("ident"), realname=cfg.get("realname"), ns_identity=creds,
                                channels=cfg.get("channels", None), connect_modes=cfg.get("modes", None), quit_message=cfg.get("quit_message"),
                                ping_interval=cfg.getint("ping_interval"), ping_timeout=cfg.getint("ping_timeout"), verify_ssl=cfg.getboolean("verify_ssl", True),
-                               ircv3_caps=set(), executor=exec)
+                               ircv3_caps={"echo-message"}, executor=exec)
 
         self.irc.CmdHandler("PRIVMSG", "NOTICE", "JOIN", "PART", "MODE", colon=False)(self.on_message)
 
