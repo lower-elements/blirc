@@ -18,7 +18,7 @@ class Network:
                             ident=cfg.get("ident"), realname=cfg.get("realname"), ns_identity=creds,
                                channels=cfg.get("channels", None), connect_modes=cfg.get("modes", None), quit_message=cfg.get("quit_message"),
                                ping_interval=cfg.getint("ping_interval"), ping_timeout=cfg.getint("ping_timeout"), verify_ssl=cfg.getboolean("verify_ssl", True),
-                               ircv3_caps={"echo-message"}, executor=exec)
+                               ircv3_caps=set(), executor=exec)
 
         self.irc.CmdHandler("PRIVMSG", "NOTICE", "JOIN", "PART", "MODE", colon=False)(self.on_message)
 
@@ -83,45 +83,51 @@ class Network:
         if self.active and self.current_buffer_name == buf:
             speak(repr(msg), True)
 
+    def with_writable_buffer(self, f):
+        if buf := self.current_buffer:
+            if self.current_buffer_name == "Server Messages": speak("Buffer is read-only", True)
+            else: return f(buf, self.current_buffer_name)
+        else: speak("No buffers", True)
+
     def msg_current(self, *args):
-        if self.current_buffer_name != "Server Messages":
-            self.irc.msg(self.current_buffer_name, *args)
+        def send(buf, buf_name):
+            self.irc.msg(buf_name, *args)
             if "echo-message" not in self.irc.active_caps:
-                msg = Message.synthesize_privmsg(self.irc, self.current_buffer_name, *args)
-                self.current_buffer.append(msg)
+                msg = Message.synthesize_privmsg(self.irc, buf_name, *args)
+                buf.append(msg)
                 speak(repr(msg), True)
-        else:
-            speak("Buffer is read-only", True)
+
+        self.with_writable_buffer(send)
 
     def notice_current(self, *args):
-        if self.current_buffer_name != "Server Messages":
-            self.irc.notice(self.current_buffer_name, *args)
+        def send(buf, buf_name):
+            self.irc.notice(buf_name, *args)
             if "echo-message" not in self.irc.active_caps:
-                msg = Message.synthesize_notice(self.irc, self.current_buffer_name, *args)
-                self.current_buffer.append(msg)
+                msg = Message.synthesize_notice(self.irc, buf_name, *args)
+                buf.append(msg)
                 speak(repr(msg), True)
-        else:
-            speak("Buffer is read-only", True)
+
+        self.with_writable_buffer(send)
 
     def me_current(self, *args):
-        if self.current_buffer_name != "Server Messages":
-            self.irc.me(self.current_buffer_name, *args)
+        def send(buf, buf_name):
+            self.irc.me(buf_name, *args)
             if "echo-message" not in self.irc.active_caps:
-                msg = Message.synthesize_ctcp(self.irc, "ACTION", *args)
-                self.current_buffer.append(msg)
+                msg = Message.synthesize_ctcp(self.irc, buf_name, "ACTION", *args)
+                buf.append(msg)
                 speak(repr(msg), True)
-        else:
-            speak("Buffer is read-only", True)
+
+        self.with_writable_buffer(send)
 
     def ctcp_current(self, *args):
-        if self.current_buffer_name != "Server Messages":
-            self.irc.ctcp(self.current_buffer_name, *args)
+        def send(buf, buf_name):
+            self.irc.ctcp(buf_name, *args)
             if "echo-message" not in self.irc.active_caps:
-                msg = Message.synthesize_ctcp(self.irc, *args)
-                self.current_buffer.append(msg)
+                msg = Message.synthesize_ctcp(self.irc, buf_name, *args)
+                buf.append(msg)
                 speak(repr(msg), True)
-        else:
-            speak("Buffer is read-only", True)
+
+        self.with_writable_buffer(send)
 
     def __repr__(self):
         match self.irc.connected:

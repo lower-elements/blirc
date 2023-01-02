@@ -13,8 +13,8 @@ class Message:
         return Message((irc.current_nick, irc.ident, irc.realname), "NOTICE", args)
 
     @staticmethod
-    def synthesize_ctcp(irc, *args):
-        return Message((irc.current_nick, irc.ident, irc.realname), "PRIVMSG", [f"\x01{' '.join(args)}\x01"])
+    def synthesize_ctcp(irc, target, *args):
+        return Message((irc.current_nick, irc.ident, irc.realname), "PRIVMSG", [target, f"\x01{' '.join(args)}\x01"])
 
     def __repr__(self):
         match self.command:
