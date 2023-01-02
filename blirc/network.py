@@ -50,7 +50,8 @@ class Network:
         if len(self.buffer_list) > 0:
             self.current_buffer.hidden = True
             del self.buffer_list[self.buffer_idx]
-            if len(self.buffer_list) > self.buffer_idx: self.buffer_idx = -1
+        if len(self.buffer_list) == 0: speak("No buffers", True)
+        elif len(self.buffer_list) > self.buffer_idx: self.buffer_idx = -1
 
     @property
     def name(self):
