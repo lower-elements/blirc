@@ -14,7 +14,11 @@ class Network:
         self._name = name
 
         creds = (cfg.get("nick"), cfg.get("password")) if "password" in cfg else None
-        self.irc = miniirc.IRC(cfg.get("host"), cfg.getint("port"), cfg.get("nick"), channels=cfg.get("channels", None), ident=cfg.get("ident"), realname=cfg.get("realname"), ns_identity=creds, ircv3_caps={"echo-message"}, executor=exec)
+        self.irc = miniirc.IRC(cfg.get("host"), cfg.getint("port"), cfg.get("nick"),
+                            ident=cfg.get("ident"), realname=cfg.get("realname"), ns_identity=creds,
+                               channels=cfg.get("channels", None), connect_modes=cfg.get("modes", None), quit_message=cfg.get("quit_message"),
+                               ping_interval=cfg.getint("ping_interval"), ping_timeout=cfg.getint("ping_timeout"), verify_ssl=cfg.getboolean("verify_ssl", True),
+                               ircv3_caps={"echo-message"}, executor=exec)
 
         self.irc.CmdHandler("PRIVMSG", "NOTICE", "JOIN", "PART", "MODE", colon=False)(self.on_message)
 

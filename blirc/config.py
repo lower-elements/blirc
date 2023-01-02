@@ -10,6 +10,10 @@ DEFAULTS = {
             "nick": getpass.getuser(),
             "ident": getpass.getuser(),
             "realname": getpass.getuser(),
+            "quit_message": "{} v{}.{}.{}".format(consts.TITLE, consts.VERSION[0], consts.VERSION[1], consts.VERSION[2]),
+            "ping_interval": "60",
+            "ping_timeout": "60",
+            "verify_ssl": "true",
         }
 
 def load():
