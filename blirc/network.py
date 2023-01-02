@@ -45,6 +45,13 @@ class Network:
         else:
             return None
 
+    @current_buffer.deleter
+    def current_buffer(self):
+        if len(self.buffer_list) > 0:
+            self.current_buffer.hidden = True
+            del self.buffer_list[self.buffer_idx]
+            if len(self.buffer_list) > self.buffer_idx: self.buffer_idx = -1
+
     @property
     def name(self):
         try:
@@ -58,7 +65,12 @@ class Network:
 
     def buffer(self, name):
         try:
-            return self.buffers[name]
+            buf = self.buffers[name]
+            if buf.hidden: # Reactive the buffer
+                buf.hidden = False
+                self.buffer_list.append(name)
+                speak(f"New buffer: {name}", True)
+            return buf
         except KeyError:
             self.buffers[name] = Buffer()
             self.buffer_list.append(name)
@@ -83,11 +95,13 @@ class Network:
         if self.active and self.current_buffer_name == buf:
             speak(repr(msg), True)
 
-    def with_writable_buffer(self, f):
-        if buf := self.current_buffer:
-            if self.current_buffer_name == "Server Messages": speak("Buffer is read-only", True)
-            else: return f(buf, self.current_buffer_name)
+    def with_current_buffer(self, f):
+        if buf := self.current_buffer: return f(buf, self.current_buffer_name)
         else: speak("No buffers", True)
+
+    def with_writable_buffer(self, f):
+        return self.with_current_buffer(
+                lambda buf, buf_name: f(buf, buf_name) if buf_name != "Server Messages" else speak("Buffer is read-only", True))
 
     def msg_current(self, *args):
         def send(buf, buf_name):
@@ -129,6 +143,15 @@ class Network:
 
         self.with_writable_buffer(send)
 
+    def part_current(self, *, part_msg=None):
+        args = [part_msg] if part_msg else []
+        def part(buf, buf_name):
+            if buf_name != "Server Messages": # Not a virtual buffer
+                self.irc.send("PART", buf_name, *args)
+            del self.current_buffer
+
+        self.with_current_buffer(part)
+
     def __repr__(self):
         match self.irc.connected:
             case True: s = ""
@@ -157,7 +180,7 @@ class Network:
             case pygame.K_n:
                 speak(repr(self), True)
             case pygame.K_b:
-                speak(self.buffer_list[self.buffer_idx], True)
+                self.with_current_buffer(lambda buf, buf_name: speak(buf_name, True))
 
             case _ if buf := self.current_buffer:
                 buf.handle_event(event)

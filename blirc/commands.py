@@ -17,6 +17,10 @@ class CommandProcessor:
                     ui.with_current_network(lambda net: net.ctcp_current(ctcp_command.upper(), *ctcp_args))
                 case "ctcp":
                     speak("/ctcp requires at least 1 argument", True)
+                case "hide":
+                    def hide(net):
+                        del net.current_buffer
+                    ui.with_current_network(hide)
                 case "join" if args is not None:
                     # maxsplit=2 is so that the two-argument form, with a channel key, works
                     join_args = args.split(maxsplit=2)
@@ -28,6 +32,8 @@ class CommandProcessor:
                 case "notice":
                     notice_msg = args if args else ''
                     ui.with_current_network(lambda net: net.notice_current(notice_msg))
+                case "part":
+                    ui.with_current_network(lambda net: net.part_current())
                 case "quit":
                     ui.shutdown(quit_msg=args)
                     pygame.quit()

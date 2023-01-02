@@ -4,6 +4,7 @@ from .speech import speak
 
 class Buffer:
     def __init__(self):
+        self.hidden = False
         self.messages = []
         self._message_idx = 0
 
