@@ -56,7 +56,7 @@ class UI:
         if len(self.networks) > self.network_idx:
             return self.networks[self.network_idx]
 
-    def if_has_network(self, f):
+    def with_current_network(self, f):
         if net := self.current_network: return f(net)
         else: speech.speak("No networks", True)
 
