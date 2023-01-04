@@ -85,9 +85,6 @@ class UI:
                 text = event.text
                 speech.speak(text, True)
                 self.message += text
-            case pygame.TEXTINPUT if not self.entering_message and event.text == "/":
-                self.entering_message = True
-                speech.speak("Message: ", True)
 
             case pygame.KEYDOWN:
                 if event.mod & pygame.KMOD_CTRL: speech.stop()
@@ -95,6 +92,7 @@ class UI:
                 if self.entering_message:
                     match event.key:
                         case pygame.K_ESCAPE:
+                            pygame.key.stop_text_input()
                             self.entering_message = False
                             self.message = ""
                             speech.speak("Cancelled", True)
@@ -105,10 +103,15 @@ class UI:
                         case pygame.K_RETURN:
                             self.cmd_proc.perform(self.message, self)
                             self.message = ""
+                            pygame.key.stop_text_input()
                             self.entering_message = False
 
                 else:
                     match event.key:
+                        case pygame.K_SLASH:
+                            self.entering_message = True
+                            pygame.key.start_text_input()
+                            speech.speak("Message: ", True)
                         case pygame.K_EQUALS: self.network_idx += 1
                         case pygame.K_MINUS: self.network_idx -= 1
                         case x if event.mod & pygame.KMOD_CTRL and x in range(pygame.K_1, pygame.K_9 + 1):
