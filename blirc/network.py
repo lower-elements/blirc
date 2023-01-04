@@ -20,7 +20,7 @@ class Network:
                                ping_interval=cfg.getint("ping_interval"), ping_timeout=cfg.getint("ping_timeout"), verify_ssl=cfg.getboolean("verify_ssl", True),
                                ircv3_caps={"echo-message"}, executor=exec)
 
-        self.irc.CmdHandler("PRIVMSG", "NOTICE", "JOIN", "PART", "MODE", colon=False)(self.on_message)
+        self.irc.CmdHandler("PRIVMSG", "NOTICE", "JOIN", "PART", "MODE", ircv3=True, colon=False)(self.on_message)
 
     def __del__(self):
         self.irc.disconnect()
@@ -89,9 +89,9 @@ class Network:
             case _:
                 return target
 
-    def on_message(self, irc, command, hostmask, args):
+    def on_message(self, irc, command, hostmask, tags, args):
         buf = self.map_buffer_name(args[0], hostmask[0])
-        msg = Message(hostmask, command, args)
+        msg = Message(hostmask, tags, command, args)
         self.buffer(buf).append(msg)
         if self.active and self.current_buffer_name == buf:
             speak(repr(msg), True)
