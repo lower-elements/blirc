@@ -7,3 +7,8 @@ realname=Bob the Builder
 host=irc.libera.chat
 password=hunter2
 channels=#blindcomputing,#archlinux
+
+[OFTC]
+enabled=false
+host=irc.oftc.net
+quit_message=Quit! Leaving to see the sights
