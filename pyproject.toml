@@ -27,7 +27,7 @@ dependencies = [
     "pyobjc~=9.0.1; sys_platform=='darwin'",
 ]
 
-gui-scripts = { blirc = "blirc.main:main" }
+gui-scripts = { blirc = "blirc.__main__:main" }
 
 [project.urls]
 "Homepage" = "https://github.com/lower-elements/blirc"
