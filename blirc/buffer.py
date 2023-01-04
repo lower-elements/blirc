@@ -3,6 +3,8 @@ import pygame
 from .speech import speak
 
 class Buffer:
+    __slots__ = ["hidden", "messages", "_message_idx"]
+
     def __init__(self):
         self.hidden = False
         self.messages = []

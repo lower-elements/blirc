@@ -6,6 +6,8 @@ from .message import Message
 from .speech import speak
 
 class Network:
+    __slots__ = ["active", "buffers", "buffer_list", "_buffer_idx", "_name", "irc"]
+
     def __init__(self, name, cfg, exec):
         self.active = False
         self.buffers = {}
