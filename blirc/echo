@@ -1,0 +1,393 @@
+commit 47e3216b2015cb0d0f859c1ea2528bf78fdcc97f
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Mon Jan 2 01:14:51 2023 +0000
+
+    Undo disabling echo-message
+
+commit b777ab5f7f228a616e1e8b421d329f8f69887757
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Mon Jan 2 01:09:39 2023 +0000
+
+    Redo buffer message traversal, read current message with m keybind
+    
+    Now, if there is only one message, trying to navigate backwards or
+    forwards will not read it. In future, there will be an end-of-buffer
+    sound played instead. For now, just press m, to read the current
+    message.
+
+commit 976240b81b8a7003132a92446665050ef6aa3b31
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Mon Jan 2 01:01:12 2023 +0000
+
+    Implement custom /quit messages
+
+commit f640aa4ce6fc83c1b16ec391a235ea86e0f1baf8
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Mon Jan 2 00:57:57 2023 +0000
+
+    Rename UI.if_has_network() to UI.with_current_network()
+    
+    This is more consistent with Network.with_writable_buffer().
+
+commit 73d5b30f2dbf188727c484d978dd669830a15c1f
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Mon Jan 2 00:55:25 2023 +0000
+
+    Refactor Network.*_current() functions w/ Network.with_writable_buffer()
+    
+    This fixes crashes that could occur if there are no buffers, and makes
+    the code more DRY.
+
+commit 0951d4c70187fe0001126b3eacd22e020294850f
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Mon Jan 2 00:40:49 2023 +0000
+
+    Make many more miniirc.IRC options configurable
+
+commit 05a78947f8d57558eef682404a188765e3d0b5e6
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Mon Jan 2 00:18:51 2023 +0000
+
+    Refactor message synthesis
+    
+    For servers that don't support the echo-message capability, we
+    synthesize sent messages so they can be logged to the buffer. Now, I've
+    added @staticmetho factory functions to make creating these Message
+    objects much easier.
+
+commit 6cab92ff4a5bd94a08b678fa63683e4b5cd772e8
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Sun Jan 1 23:53:53 2023 +0000
+
+    Redirect server private messages to the "Server Messages" buffer
+    
+    On some networks, the server sends messages to you with a target of "*",
+    but on others, the target is your nick, so we redirect all messages
+    whos targets are our nick that come from the server.
+
+commit 18d1dcea58cb99686228dd52f8c0d85686a6a2fa
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Sun Jan 1 23:40:49 2023 +0000
+
+    Check whether there is a current network before using it
+    
+    This fixes a bug where various actions would lead to a crash if no
+    networks were configured.
+
+commit d928be0e69d4c9cc561db2736ab97a09cf74035c
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Sun Jan 1 23:22:23 2023 +0000
+
+    Refactor event handling
+    
+    In order, the ui, then the network, then the buffer get a chance to
+    react to events now, with each layer delegating to the next if they're
+    not interested in the event.
+
+commit 58991c1fa476b977cd9b2e95fddfd4f1ec9b36fb
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Sun Jan 1 22:53:25 2023 +0000
+
+    Fix network switching
+
+commit 8772133eb7cb3638c4597c3a3f596c6fb039f7e0
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Sun Jan 1 22:13:19 2023 +0000
+
+    Implement /notice
+
+commit 09ceee766032d2c9b6992db58b06adb6b77546aa
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Sun Jan 1 22:08:28 2023 +0000
+
+    Better error messages for commands that require arguments
+
+commit f31c1126a312e332055c68962b87a53f20da3410
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Sun Jan 1 22:04:37 2023 +0000
+
+    Implement /join
+
+commit 97c2202b034bf18e3e4a97f32ccf63182dc931b3
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Sun Jan 1 21:56:06 2023 +0000
+
+    Implement initial support for sending CTCP messages
+    
+    This isn't ideal right now because usernames can't be given to direct
+    them - they're always sent to the current buffer. This will be fixed in
+    the future.
+
+commit 1a2e1f876d2ec79f39816d6ab8bbcd1c5a13ada4
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Sun Jan 1 21:48:04 2023 +0000
+
+    Implement /quit
+    
+    This disconnects from all networks and quits blirc.
+
+commit 76028d1d10a039ed9debe0dc1876ac0c1c856de4
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Sun Jan 1 21:44:02 2023 +0000
+
+    Create and use a CommandProcessor
+    
+    Currently it only handles normal messages and /me but this will be
+    expanded in the future.
+
+commit c85611e02d4f710c68dc8ff77fb8828be9f9338a
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Sun Jan 1 20:41:09 2023 +0000
+
+    Correctly shutdown IRC connections when quitting
+
+commit 9f905bf458c1ab26cfcc685a2c9e88d5e14c2aeb
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Sun Jan 1 19:21:50 2023 +0000
+
+    Bump required python to 3.10
+    
+    We're using match-case, which is a Python 3.10 feature.
+
+commit 58954d532df9b53ec6d7fc40a9636843f64f537b
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Sun Jan 1 19:18:08 2023 +0000
+
+    Add appdirs dependency
+
+commit a17a06b8c9bbf02450d941fc98509b6b205db71e
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Sun Jan 1 19:11:39 2023 +0000
+
+    Change project name
+    
+    Airc is already taken on pypi so we're changing the name to blirc (Blind
+    IRC).
+
+commit e8b4b8e8d17a180a8f8476fe2408140a0172ac53
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Sun Jan 1 18:33:58 2023 +0000
+
+    Refactor and add pyproject.toml package metadata
+    
+    It is now possible to build and distribute airc using the python build
+    module, with setuptools as the backend. Dependencies, entrypoints, etc,
+    are correctly specified.
+
+commit f4720c6e49890e7b3f6ff660c6e144e341807157
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Sun Jan 1 18:33:21 2023 +0000
+
+    Add simple README.md
+
+commit fff3e6c0cb651fff24f8816c6bc9d96721bb63ed
+Author: blind.lightning.productions <blind.lightning.productions@gmail.com>
+Date:   Wed Dec 28 22:39:38 2022 +0000
+
+    feat: adds shortcuts for moving to the end and beginning of buffers
+
+commit c7e2d1d7ab56be0df7fea53679215aed11f06df9
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Wed Dec 28 20:53:06 2022 +0000
+
+    Allow sending CTCP actions
+    
+    This is currently very crudely implemented, and I will eventually add a
+    propper command processor
+
+commit 89116528ec733bac88f596a19071575912e6602b
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Wed Dec 28 20:52:49 2022 +0000
+
+    Display CTCP actions correctly
+
+commit 56f47c7cfc38c4a33903ebc9dc594191ce8d9ac1
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Wed Dec 28 20:24:02 2022 +0000
+
+    Echo sent messages
+    
+    If the server supports echo-message, that capability is used, otherwise
+    the client echos messages locally
+
+commit 762d7b6a051b6ffcf9f07dc13b89b716a2ad71f6
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Wed Dec 28 17:45:55 2022 +0000
+
+    Echo sent messages correctly
+    
+    if the echo-message capability is supported, we use that, else we echo
+    messages locally.
+
+commit 6c5b3266f23aa66328b29e4f4387eef8e41cd731
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Wed Dec 28 17:38:12 2022 +0000
+
+    Use a single thread pool for all connections
+
+commit 9775c423d800b0ff8a3cbd6b056e533b86f6c240
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Wed Dec 28 16:40:50 2022 +0000
+
+    Refactor message sending
+    
+    We now just call Network.msg_current() which privmsgs the current
+    buffer. This will make features like message echoing easier.
+
+commit 9476df9f70ee5cf7aca4a647d9ba1789b5f68d96
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Wed Dec 28 16:27:24 2022 +0000
+
+    Speak incoming messages in active buffer
+
+commit 4fd9d09d68171105380c2fcc294017d80b7302a6
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Wed Dec 28 16:26:18 2022 +0000
+
+    Fix spam messages crashing speech-dispatcher
+    
+    Apparently sending too many messages at once to speechd isn't good, so
+    we limit it to 1 message every 0.1 seconds.
+
+commit d1f7078f4a858382f5a1a9bc798ba84316585b7d
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Wed Dec 28 15:36:43 2022 +0000
+
+    Fix messages always starting with a / character
+
+commit 681f927418d2cd00fda71514c17c1591852dbc57
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Wed Dec 28 15:32:53 2022 +0000
+
+    Dismiss message entry field when sending message
+
+commit 18aa321744e0295b2bb2886b7322191d82683181
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Wed Dec 28 01:32:06 2022 +0000
+
+    Remove .DS_STORE
+
+commit 63ed681aaa4dffcd9e223d2b7e6edd3b8e4ab514
+Author: Stanislaw Przedzinkowski <48333171+Mudb0y@users.noreply.github.com>
+Date:   Wed Dec 28 02:31:28 2022 +0100
+
+    Fix: Slow-down Mac OS speech rate.
+
+commit d0e84fcb78edbb3ddc51e1ce0196871738b35b2f
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Wed Dec 28 01:08:57 2022 +0000
+
+    Add example config file
+
+commit 4820d9b869cd98bb5372c9a3d7abd81c01d8b770
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Wed Dec 28 01:07:07 2022 +0000
+
+    Enable sending messages
+    
+    Currently a bug causes every message to start with '/'.
+
+commit d1c0ce1c26313006eec78a78b27cdbad42a2faee
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Tue Dec 27 23:45:56 2022 +0000
+
+    Only scroll through messages when there is a current buffer
+
+commit ddc75298f54908fdee0a062b9b8803bd43e8371e
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Tue Dec 27 23:45:50 2022 +0000
+
+    Don't speak new server messages buffer, it's being spoken anyway
+
+commit dd105bf812337777ee9bf21d982baa51f7371137
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Tue Dec 27 23:29:55 2022 +0000
+
+    Change networks with ctrl+number, buffers with number
+    
+    Keybinds will likely be customisable later on, but this is logical for
+    now.
+
+commit 94367160bbf1e31420624dc5ee5bca24f57c8a83
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Tue Dec 27 23:17:15 2022 +0000
+
+    Pause speech on control
+
+commit 16ffff388dfcc440710e524e9d71597907919d5d
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Tue Dec 27 22:57:52 2022 +0000
+
+    Correctly map buffer names
+    
+    If the target is *, the buffer name is "Server Messages". Otherwise if
+    the target is our current nick, the buffer name is the nick of the
+    source. Otherwise, the buffer name is the target name.
+
+commit f956458a6397af629b1a9e68cc55763c9d9bbc18
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Tue Dec 27 22:50:03 2022 +0000
+
+    Handle more message types when displaying
+
+commit ae2fcb9c3bbc7fc600a6078f493160c57f14dc8c
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Tue Dec 27 22:14:18 2022 +0000
+
+    Implement message buffers and start work on message display
+
+commit bb45af510087d9edb52c9ae91a66706a8e133996
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Tue Dec 27 20:33:21 2022 +0000
+
+    Add properties & methods on Network for switching between and getting buffers
+
+commit 3e970161d61be4cb5130a35e7b8b7e1dd8bef287
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Tue Dec 27 19:40:23 2022 +0000
+
+    Disconnect from networks on quit
+
+commit 27fb02ec2f1cb5965a320640842463f3db360dc1
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Tue Dec 27 19:36:45 2022 +0000
+
+    Allow pressing n to read network information.
+    
+    UI.current_network was renamed to UI.network_idx, and the new
+    UI.current_network property returns the active Network object.
+
+commit 3c4ce1437b012110c7f3d4b26bfaf902206b596b
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Tue Dec 27 19:27:56 2022 +0000
+
+    Allow switching networks via number keys
+    
+    1-9 switch to the nth network, 0 selects the last network.
+
+commit 1752c5963912457e742bf1cd926fb9c0524e3845
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Tue Dec 27 19:21:26 2022 +0000
+
+    Correctly use NETWORK isupport parameter for network naming
+
+commit 6dc25a57ff1bf81a486c4aac1c7f13e04673f37b
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Tue Dec 27 19:08:10 2022 +0000
+
+    Add = / - keybinds to move between networks
+
+commit ce59354dcffe5ba6a71a0fd4dab52f6225ebe169
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Tue Dec 27 19:03:38 2022 +0000
+
+    Connect to all networks specified in config
+    
+    the Network class will handle all activity related to a single IRC
+    network, and will contain that network's buffers (one per channel / DM).
+
+commit fea1f18e01e46d53a10aaec9eeea68746c5e936a
+Author: Michael Connor Buchan <mikey@blindcomputing.org>
+Date:   Tue Dec 27 17:30:30 2022 +0000
+
+    Initial commit with GPL3, main loop, speech, and config loading
