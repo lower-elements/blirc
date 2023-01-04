@@ -61,7 +61,7 @@ class UI:
 
     def populate(self):
         for name, cfg in self.cfg.items():
-            if name == configparser.DEFAULTSECT: continue
+            if name == configparser.DEFAULTSECT or not cfg.getboolean("enabled", True): continue
             self.networks.append(Network(name, cfg, self.exec))
         self.network_idx = 0
 
