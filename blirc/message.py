@@ -2,6 +2,8 @@ from datetime import datetime, timezone
 import human_readable as hm
 
 class Message:
+    __slots__ = ["hostmask", "command", "args", "sent"]
+
     def __init__(self, hostmask, tags, command, args):
         self.hostmask = hostmask
         self.command = command
