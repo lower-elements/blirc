@@ -6,31 +6,41 @@ Blirc is a self-voicing IRC client, designed to be used by blind / visually impa
 
 If you'd like to run this from source (Currently the only way):
 
-    $ git clone https://github.com/lower-elements/blirc
-    $ cd blirc
-    $ pip install .
-    $ python -m blirc.main
+```shell
+git clone https://github.com/lower-elements/blirc
+cd blirc
+pip install .
+python -m blirc
+```
 
 At this time, no config initialisation has-been implemented yet. If you don't copy the configuration file to your user-directory, the app might respond with unexpected behaviour.
 
-On Windows, copy config.ini.example in to your standard App Data folder, E.G c:\users\Alice\app data\local\lower-elements\blirc
-
-On Mac OS, copy it to your Application Support folder, E.G /Users/Alice/Library/Application Support/blirc
-
-On most other Unix-based operating systems, copy it to ~/.config/blirc
+* On Windows, copy config.ini.example in to your standard App Data folder, E.G c:\users\Alice\app data\local\lower-elements\blirc
+* On Mac OS, copy it to your Application Support folder, E.G /Users/Alice/Library/Application Support/blirc
+* On most other Unix-based operating systems, copy it to ~/.config/blirc
 
 Rename config.ini.example to config.ini after copying it to it's destination, then edit it and change / add whatever settings you need.
 
 ## Keybinds
 
-Here's an incomplete list of the keybinds you need to use the program. Although not all keyboard shortcuts are listed here, these which are required for the basic operation of the program are present.
+Here's a complete list of the keybinds you need to use the program. These will be customisable in the future.
 
-* /: Send a message.
-* m: Say the message currently focused in the buffer.
-* N: Say the name of the currently selected network.
-* [ and ]: Switch buffers.
-* , and .: Go up and down the list of messages in the current buffer.
-* CTRL + number-row: Switch networks.
+|Shortcut|Description|
+|--------|-----------|
+|<kbd>/</kbd>|Send a message.|
+|<kbd>m</kbd>|Say the message currently focused in the buffer.|
+|<kbd>N</kbd>|Say the name of the currently selected network.|
+|<kbd>B</kbd>|Say the name of the currently selected buffer.|
+|<kbd>-</kbd> and <kbd>=</kbd>|Switch networks.|
+|<kbd>SHIFT+-</kbd> and <kbd>SHIFT+=</kbd>|Switch to the first and last network, respectively.|
+|<kbd>[</kbd> and <kbd>]</kbd>|Switch buffers.|
+|<kbd>SHIFT+[</kbd> and <kbd>SHIFT+]</kbd>|Switch to the first and last buffer, respectively.|
+|<kbd>,</kbd> and <kbd>.</kbd>|Go up and down the list of messages in the current buffer.|
+|<kbd>SHIFT+,</kbd> and <kbd>SHIFT+.</kbd>|Switch to the first and last message, respectively.|
+|<kbd>CTRL+1-9</kbd>|Switch to the nth network.|
+|<kbd>CTRL+0</kbd>|Switch to the last network.|
+|<kbd>1-9</kbd>|Switch to the nth buffer in the current network.|
+|<kbd>0</kbd>|Switch to the last buffer in the current network.|
 
 ## License
 
