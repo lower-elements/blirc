@@ -4,14 +4,24 @@ import pygame
 import sys
 
 from . import config
+from . import consts
 from .commands import CommandProcessor
 from .network import Network
 from . import speech
 
 class UI:
-    def __init__(self, screen):
-        self.screen = screen
+    def __init__(self):
         self.cfg = config.load()
+
+        pygame.init()
+        pygame.display.init()
+
+        pygame.display.set_caption("{} v{}.{}.{}".format(consts.TITLE, consts.VERSION[0], consts.VERSION[1], consts.VERSION[2]))
+        self.screen = pygame.display.set_mode((800, 600))
+
+        pygame.key.set_text_input_rect((0, 0, 800, 600))
+        pygame.key.stop_text_input()
+
         self.exec = ThreadPoolExecutor(thread_name_prefix="irc")
         self.cmd_proc = CommandProcessor()
 
