@@ -42,7 +42,7 @@ class Buffer:
             case pygame.K_PERIOD if not event.mod&pygame.KMOD_SHIFT:
                     self.message_idx += 1
             case pygame.K_PERIOD:
-                    self.message_idx = -1
+                    self.message_idx = len(self.messages)-1
 
             case pygame.K_m:
                 self.with_current_message(lambda msg: speak(repr(msg), True))
