@@ -20,6 +20,10 @@ class Message:
         match self.command:
             case "JOIN":
                 return f"{self.hostmask[0]} joined {self.args[0]}"
+            case "KICK" if len(self.args) > 2:
+                return f"{self.args[1]} was kicked from {self.args[0]} by {self.hostmask[0]} - {self.args[-1]}"
+            case "KICK":
+                return f"{self.args[1]} was kicked from {self.args[0]} by {self.hostmask[0]}"
             case "PART":
                 return f"{self.hostmask[0]} left {self.args[0]}"
             case "QUIT":

@@ -27,8 +27,18 @@ class CommandProcessor:
                     ui.with_current_network(lambda net: net.irc.send("JOIN", *join_args))
                 case "join":
                     speak("/join requires at least 1 argument", True)
+                case "kick" if args is not None:
+                    target, *kick_args = args.split(maxsplit=2)
+                    ui.with_current_network(lambda net: net.with_writable_buffer(lambda buf, buf_name: net.irc.send("KICK", buf_name, target, *kick_args)))
+                case "kick":
+                    speak("/kick requires at least 1 argument", True)
                 case "me":
                     ui.with_current_network(lambda net: net.me_current(args))
+                case "mode" if args is not None:
+                    target, *mode_args = args.split(maxsplit=3)
+                    ui.with_current_network(lambda net: net.irc.send("MODE", target, *mode_args))
+                case "mode":
+                    speak("/mode requires at least 1 argument", True)
                 case "notice":
                     notice_msg = args if args else ''
                     ui.with_current_network(lambda net: net.notice_current(notice_msg))
