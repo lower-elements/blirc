@@ -1,6 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
 import configparser
-import platform
 import pygame
 import sys
 
@@ -91,8 +90,7 @@ class UI:
                 speech.speak("Message: ", True)
 
             case pygame.KEYDOWN:
-                if platform.system() == "Linux" and event.mod & pygame.KMOD_CTRL:
-                    speech.linux_speaker.cancel()
+                if event.mod & pygame.KMOD_CTRL: speech.stop()
 
                 if self.entering_message:
                     match event.key:

@@ -1,35 +1,37 @@
-import platform
+import sys
 
-if platform.system() == "Windows":
-    from cytolk import tolk
-    tolk.try_sapi(True)
-    tolk.load("__compiled__" not in globals())
-
-elif platform.system() == "Darwin":
-    from . import NSSS
-    speaker = NSSS.NSSS ()
-
-elif platform.system() == "Linux":
-    import speechd
-    from time import perf_counter
-    from . import consts
-    linux_speaker = speechd.Speaker(consts.NAME)
-    linux_speaker.set_priority(speechd.Priority.TEXT)
-    last = perf_counter()
+match sys.platform:
+    case "win32":
+        from cytolk import tolk
+        tolk.try_sapi(True)
+        tolk.load("__compiled__" not in globals())
+    case "darwin":
+        from . import NSSS
+        speaker = NSSS.NSSS ()
+        speaker.set ("rate", 300)
+    case "linux":
+        import speechd
+        from time import perf_counter
+        from . import consts
+        linux_speaker = speechd.Speaker(consts.NAME)
+        linux_speaker.set_priority(speechd.Priority.TEXT)
+        last = perf_counter()
 
 def speak (text, interupt = True):
-    if platform.system() == "Windows":
-        tolk.speak(text, interupt)
+    match sys.platform:
+        case "win32": tolk.speak(text, interupt)
+        case "linux":
+            global last
+            elapsed = perf_counter() - last
+            if elapsed > 0.1:
+                if interupt:
+                    linux_speaker.cancel()
+                    linux_speaker.speak(text)
+                    last = perf_counter()
+        case "darwin": speaker.speak (text, interupt)
 
-    elif platform.system() == "Linux":
-        global last
-        elapsed = perf_counter() - last
-        if elapsed > 0.1:
-            if interupt:
-                linux_speaker.cancel()
-                linux_speaker.speak(text)
-                last = perf_counter()
-
-    elif platform.system() == "Darwin":
-        speaker.set ("rate", 300)
-        speaker.speak (text, interupt)
+def stop():
+    match sys.platform:
+        case "darwin": speaker.stop()
+        case "linux": linux_speaker.cancel()
+        case "win32": tolk.silence()
