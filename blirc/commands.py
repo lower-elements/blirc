@@ -4,6 +4,7 @@ import sys
 from .speech import speak
 
 class CommandProcessor:
+    __slots__ = []
     def __init__(self):
         pass
 

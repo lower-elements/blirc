@@ -10,6 +10,8 @@ from .network import Network
 from . import speech
 
 class UI:
+    __slots__ = ["cfg", "screen", "networks", "_network_idx", "exec", "cmd_proc", "entering_message", "message"]
+
     def __init__(self):
         self.cfg = config.load()
 
