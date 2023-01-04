@@ -5,6 +5,7 @@ Blirc is a self-voicing IRC client, designed to be used by blind / visually impa
 ## Installation
 
 If you'd like to run this from source (Currently the only way):
+
     $ git clone https://github.com/lower-elements/blirc
     $ cd blirc
     $ pip install .
