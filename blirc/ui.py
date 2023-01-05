@@ -1,5 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor
 import configparser
+import miniirc
 import pygame
 import sys
 
@@ -18,7 +19,7 @@ class UI:
         pygame.init()
         pygame.display.init()
 
-        pygame.display.set_caption("{} v{}.{}.{}".format(consts.TITLE, consts.VERSION[0], consts.VERSION[1], consts.VERSION[2]))
+        pygame.display.set_caption(consts.VERSION_STRING)
         self.screen = pygame.display.set_mode((800, 600))
 
         pygame.key.set_text_input_rect((0, 0, 800, 600))
@@ -34,6 +35,7 @@ class UI:
         # IRC state
         self.networks = []
         self._network_idx = 0
+        miniirc.version = consts.CTCP_VERSION
         self.populate()
 
     def __del__(self):
