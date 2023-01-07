@@ -15,11 +15,11 @@ python -m blirc
 
 At this time, no config initialisation has-been implemented yet. If you don't copy the configuration file to your user-directory, the app might respond with unexpected behaviour.
 
-* On Windows, copy config.ini.example in to your standard App Data folder, E.G c:\users\Alice\app data\local\lower-elements\blirc
-* On Mac OS, copy it to your Application Support folder, E.G /Users/Alice/Library/Application Support/blirc
-* On most other Unix-based operating systems, copy it to ~/.config/blirc
+* On Windows, copy `config.toml.example` in to your standard App Data folder, E.G `c:\users\Alice\app data\local\lower-elements\blirc`
+* On Mac OS, copy it to your Application Support folder, E.G `/Users/Alice/Library/Application Support/blirc`
+* On most other Unix-based operating systems, copy it to `~/.config/blirc`
 
-Rename config.ini.example to config.ini after copying it to it's destination, then edit it and change / add whatever settings you need.
+Rename config.toml.example to config.toml after copying it to it's destination, then edit it and change / add whatever settings you need.
 
 ## Keybinds
 

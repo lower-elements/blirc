@@ -1,0 +1,14 @@
+nick = "awesomesource123"
+ident = "bob"
+realname = "Bob the Builder"
+
+[network.LiberaChat]
+host = "irc.libera.chat"
+password = "hunter2"
+channels = ["#blindcomputing", "#archlinux"]
+
+[network.OFTC]
+enabled = false
+host = "irc.oftc.net"
+nick = "CustomNick"
+quit_message = "Leaving to see the sights"

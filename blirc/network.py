@@ -8,18 +8,18 @@ from .speech import speak
 class Network:
     __slots__ = ["active", "buffers", "buffer_list", "_buffer_idx", "_name", "irc"]
 
-    def __init__(self, name, cfg, exec):
+    def __init__(self, cfg, exec):
         self.active = False
         self.buffers = {}
         self.buffer_list = []
         self._buffer_idx = 0
-        self._name = name
+        self._name = cfg.name
 
-        creds = (cfg.get("nick"), cfg.get("password")) if "password" in cfg else None
-        self.irc = miniirc.IRC(cfg.get("host"), cfg.getint("port"), cfg.get("nick"),
-                            ident=cfg.get("ident"), realname=cfg.get("realname"), ns_identity=creds,
-                               channels=cfg.get("channels", None), connect_modes=cfg.get("modes", None), quit_message=cfg.get("quit_message"),
-                               ping_interval=cfg.getint("ping_interval"), ping_timeout=cfg.getint("ping_timeout"), verify_ssl=cfg.getboolean("verify_ssl", True),
+        creds = (cfg.nick, cfg.password) if cfg.password is not None else None
+        self.irc = miniirc.IRC(cfg.host, cfg.port, cfg.nick,
+                            ident=cfg.ident, realname=cfg.realname, ns_identity=creds,
+                               channels=cfg.channels, connect_modes=cfg.modes, quit_message=cfg.quit_message,
+                               ping_interval=cfg.ping_interval, ping_timeout=cfg.ping_timeout, verify_ssl=cfg.verify_ssl,
                                ircv3_caps={"echo-message"}, executor=exec)
 
         self.irc.CmdHandler("PRIVMSG", "NOTICE", "JOIN", "PART", "MODE", ircv3=True, colon=False)(self.on_message)
