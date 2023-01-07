@@ -26,6 +26,7 @@ dependencies = [
     "miniirc~=1.9.1",
     "pygame~=2.1.2",
     "pyobjc~=9.0.1; sys_platform=='darwin'",
+    "tomlkit~=0.11.6",
 ]
 
 gui-scripts = { blirc = "blirc.__main__:main" }

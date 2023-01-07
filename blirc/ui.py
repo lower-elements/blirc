@@ -4,7 +4,7 @@ import miniirc
 import pygame
 import sys
 
-from . import config
+from .config import Config
 from . import consts
 from .commands import CommandProcessor
 from .network import Network
@@ -14,7 +14,7 @@ class UI:
     __slots__ = ["cfg", "screen", "networks", "_network_idx", "exec", "cmd_proc", "entering_message", "message"]
 
     def __init__(self):
-        self.cfg = config.load()
+        self.cfg = Config.load()
 
         pygame.init()
         pygame.display.init()
@@ -33,10 +33,9 @@ class UI:
         self.message = ""
 
         # IRC state
-        self.networks = []
-        self._network_idx = 0
         miniirc.version = consts.CTCP_VERSION
-        self.populate()
+        self.networks = [Network(n, self.exec) for n in self.cfg.networks]
+        self._network_idx = 0
 
     def __del__(self):
         self.shutdown()
@@ -72,12 +71,6 @@ class UI:
     def with_current_network(self, f):
         if net := self.current_network: return f(net)
         else: speech.speak("No networks", True)
-
-    def populate(self):
-        for name, cfg in self.cfg.items():
-            if name == configparser.DEFAULTSECT or not cfg.getboolean("enabled", True): continue
-            self.networks.append(Network(name, cfg, self.exec))
-        self.network_idx = 0
 
     def main_loop(self):
         while True:
