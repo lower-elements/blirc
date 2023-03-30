@@ -7,10 +7,11 @@ from .config import Config
 from . import consts
 from .commands import CommandProcessor
 from .network import Network
+from .text_input import TextInput
 from . import speech
 
 class UI:
-    __slots__ = ["cfg", "screen", "networks", "_network_idx", "exec", "cmd_proc", "entering_message", "message"]
+    __slots__ = ["cfg", "screen", "networks", "_network_idx", "exec", "cmd_proc", "entering_message", "message_input"]
 
     def __init__(self):
         self.cfg = Config.load()
@@ -29,7 +30,11 @@ class UI:
 
         # UI state
         self.entering_message = False
-        self.message = ""
+        self.message_input = TextInput(
+                prompt = "Message",
+                on_cancel = self.on_message_cancel,
+                on_submit = self.on_message_submit,
+                )
 
         # IRC state
         miniirc.version = consts.CTCP_VERSION
@@ -71,6 +76,14 @@ class UI:
         if net := self.current_network: return f(net)
         else: speech.speak("No networks", True)
 
+    def on_message_cancel(self):
+        self.entering_message = False
+
+    def on_message_submit(self, msg):
+        print(f"Message: {msg}")
+        self.cmd_proc.perform(msg, self)
+        self.entering_message = False
+
     def main_loop(self):
         while True:
             events = pygame.event.get()
@@ -80,6 +93,11 @@ class UI:
             pygame.display.update()
 
     def handle_event(self, event):
+        # Let the text input handle it if it wants
+        if self.entering_message:
+            if self.message_input.handle_event(event):
+                return # Event handled
+
         match event.type:
 
             case pygame.QUIT:
@@ -87,37 +105,14 @@ class UI:
                 pygame.quit()
                 sys.exit()
 
-            case pygame.TEXTINPUT if self.entering_message:
-                text = event.text
-                speech.speak(text, True)
-                self.message += text
-
             case pygame.KEYDOWN:
                 if event.mod & pygame.KMOD_CTRL: speech.stop()
 
-                if self.entering_message:
-                    match event.key:
-                        case pygame.K_ESCAPE:
-                            pygame.key.stop_text_input()
-                            self.entering_message = False
-                            self.message = ""
-                            speech.speak("Cancelled", True)
-                        case pygame.K_BACKSPACE if len(self.message) > 0:
-                            c = self.message[-1]
-                            self.message = self.message[:-1]
-                            speech.speak(f"{c} deleted", True)
-                        case pygame.K_RETURN:
-                            self.cmd_proc.perform(self.message, self)
-                            self.message = ""
-                            pygame.key.stop_text_input()
-                            self.entering_message = False
-
-                else:
+                if not self.entering_message:
                     match event.key:
                         case pygame.K_SLASH:
                             self.entering_message = True
-                            pygame.key.start_text_input()
-                            speech.speak("Message: ", True)
+                            self.message_input.activate()
                         case pygame.K_EQUALS: self.network_idx += 1
                         case pygame.K_MINUS: self.network_idx -= 1
                         case x if event.mod & pygame.KMOD_CTRL and x in range(pygame.K_1, pygame.K_9 + 1):
