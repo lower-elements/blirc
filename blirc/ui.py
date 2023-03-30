@@ -1,4 +1,3 @@
-from concurrent.futures import ThreadPoolExecutor
 import miniirc
 import pygame
 import sys
@@ -6,12 +5,12 @@ import sys
 from .config import Config
 from . import consts
 from .commands import CommandProcessor
-from .network import Network
+from .network_manager import NetworkManager
 from .text_input import TextInput
 from . import speech
 
 class UI:
-    __slots__ = ["cfg", "screen", "networks", "_network_idx", "exec", "cmd_proc", "entering_message", "message_input"]
+    __slots__ = ["cfg", "screen", "networks", "cmd_proc", "entering_message", "message_input"]
 
     def __init__(self):
         self.cfg = Config.load()
@@ -25,7 +24,7 @@ class UI:
         pygame.key.set_text_input_rect((0, 0, 800, 600))
         pygame.key.stop_text_input()
 
-        self.exec = ThreadPoolExecutor(thread_name_prefix="irc")
+        self.networks = NetworkManager(self.cfg)
         self.cmd_proc = CommandProcessor()
 
         # UI state
@@ -38,49 +37,14 @@ class UI:
 
         # IRC state
         miniirc.version = consts.CTCP_VERSION
-        self.networks = [Network(n, self.exec) for n in self.cfg.networks]
-        self._network_idx = 0
-
-    def __del__(self):
-        self.shutdown()
 
     def shutdown(self, *, quit_msg=None):
-        for network in self.networks:
-            network.irc.disconnect(msg=quit_msg)
-        for network in self.networks:
-            network.irc.wait_until_disconnected()
-        self.exec.shutdown()
-        self.networks = []
-
-    @property
-    def network_idx(self):
-        return self._network_idx
-
-    @network_idx.setter
-    def network_idx(self, val):
-        if len(self.networks) > 0:
-            new_idx = val % len(self.networks)
-            self.networks[self._network_idx].active = False
-            self._network_idx = new_idx
-            self.networks[new_idx].active = True
-            speech.speak(repr(self.current_network), True)
-        else:
-            speech.speak("No networks", True)
-
-    @property
-    def current_network(self):
-        if len(self.networks) > self.network_idx:
-            return self.networks[self.network_idx]
-
-    def with_current_network(self, f):
-        if net := self.current_network: return f(net)
-        else: speech.speak("No networks", True)
+        self.networks.shutdown(quit_msg)
 
     def on_message_cancel(self):
         self.entering_message = False
 
     def on_message_submit(self, msg):
-        print(f"Message: {msg}")
         self.cmd_proc.perform(msg, self)
         self.entering_message = False
 
@@ -113,14 +77,14 @@ class UI:
                         case pygame.K_SLASH:
                             self.entering_message = True
                             self.message_input.activate()
-                        case pygame.K_EQUALS: self.network_idx += 1
-                        case pygame.K_MINUS: self.network_idx -= 1
+                        case pygame.K_EQUALS: self.networks.idx += 1
+                        case pygame.K_MINUS: self.networks.idx -= 1
                         case x if event.mod & pygame.KMOD_CTRL and x in range(pygame.K_1, pygame.K_9 + 1):
                             num = x - pygame.K_1
                             if len(self.networks) > num:
-                                self.network_idx = num
+                                self.networks.idx = num
                         case pygame.K_0 if event.mod & pygame.KMOD_CTRL:
-                            self.network_idx = -1
+                            self.networks.idx = -1
 
-                        case _ if network := self.current_network:
+                        case _ if network := self.networks.current:
                             network.handle_event(event)
