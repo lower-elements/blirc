@@ -1,5 +1,4 @@
 from concurrent.futures import ThreadPoolExecutor
-import configparser
 import miniirc
 import pygame
 import sys
