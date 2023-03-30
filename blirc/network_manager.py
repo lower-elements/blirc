@@ -27,25 +27,28 @@ class NetworkManager:
         self.networks = []
 
     @property
-    def idx(self):
-        return self._idx
-
-    @idx.setter
-    def idx(self, val):
-        if len(self.networks) > 0:
-            new_idx = val % len(self.networks)
-            self.networks[self._idx].active = False
-            self._idx = new_idx
-            self.networks[new_idx].active = True
-            speech.speak(repr(self.current), True)
-        else:
-            speech.speak("No networks", True)
-
-    @property
     def current(self):
-        if len(self.networks) > self.idx:
-            return self.networks[self.idx]
+        if len(self.networks) > self._idx:
+            return self.networks[self._idx]
 
     def with_current(self, f):
         if net := self.current: return f(net)
+        else: speech.speak("No networks", True)
+
+    def select(self, idx):
+        if len(self.networks) > 0:
+            self._idx = idx % len(self.networks)
+            speech.speak(repr(self.current), True)
+        else: speech.speak("No networks", True)
+
+    def select_next(self):
+        if len(self.networks) > 0:
+            self._idx = (self._idx + 1) % len(self.networks)
+            speech.speak(repr(self.current), True)
+        else: speech.speak("No networks", True)
+
+    def select_prev(self):
+        if len(self.networks) > 0:
+            self._idx = (self._idx - 1) % len(self.networks)
+            speech.speak(repr(self.current), True)
         else: speech.speak("No networks", True)

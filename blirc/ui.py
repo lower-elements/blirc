@@ -77,14 +77,14 @@ class UI:
                         case pygame.K_SLASH:
                             self.entering_message = True
                             self.message_input.activate()
-                        case pygame.K_EQUALS: self.networks.idx += 1
-                        case pygame.K_MINUS: self.networks.idx -= 1
+                        case pygame.K_EQUALS: self.networks.select_next()
+                        case pygame.K_MINUS: self.networks.select_prev()
                         case x if event.mod & pygame.KMOD_CTRL and x in range(pygame.K_1, pygame.K_9 + 1):
                             num = x - pygame.K_1
                             if len(self.networks) > num:
-                                self.networks.idx = num
+                                self.networks.select(num)
                         case pygame.K_0 if event.mod & pygame.KMOD_CTRL:
-                            self.networks.idx = -1
+                            self.networks.select(-1)
 
                         case _ if network := self.networks.current:
                             network.handle_event(event)
