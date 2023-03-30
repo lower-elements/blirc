@@ -42,6 +42,11 @@ class TextInput:
                         # Swallow backspace when the text is empty
                         # Todo: play sound
                         return True
+                    case pygame.K_v if event.mod & pygame.KMOD_CTRL:
+                        if data := pygame.scrap.get("text/plain;charset=utf-8"):
+                            text = str(data, 'utf-8')
+                            self.append(text)
+                        return True
                     case pygame.K_RETURN:
                         if self.on_submit is not None: self.on_submit(self.text)
                         self.text = ""

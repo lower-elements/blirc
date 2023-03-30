@@ -17,6 +17,7 @@ class UI:
 
         pygame.init()
         pygame.display.init()
+        pygame.scrap.init()
 
         pygame.display.set_caption(consts.VERSION_STRING)
         self.screen = pygame.display.set_mode((800, 600))

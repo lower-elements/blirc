@@ -48,3 +48,10 @@ class Buffer:
 
             case pygame.K_m:
                 self.with_current_message(lambda msg: speak(repr(msg), True))
+            case pygame.K_c if event.mod & pygame.KMOD_CTRL:
+                self.with_current_message(copy_message)
+
+def copy_message(msg):
+    data = bytes(repr(msg), 'utf-8')
+    pygame.scrap.put('text/plain;charset=utf-8', data)
+    speak("Copied", True)
