@@ -20,7 +20,7 @@ class CommandProcessor:
                     speak("/ctcp requires at least 1 argument", True)
                 case "hide":
                     def hide(net):
-                        del net.current_buffer
+                        net.buffers.hide_current()
                     ui.networks.with_current(hide)
                 case "join" if args is not None:
                     # maxsplit=2 is so that the two-argument form, with a channel key, works
@@ -30,7 +30,7 @@ class CommandProcessor:
                     speak("/join requires at least 1 argument", True)
                 case "kick" if args is not None:
                     target, *kick_args = args.split(maxsplit=2)
-                    ui.networks.with_current(lambda net: net.with_writable_buffer(lambda buf, buf_name: net.irc.send("KICK", buf_name, target, *kick_args)))
+                    ui.networks.with_current(lambda net: net.buffers.with_current_writable(lambda buf, buf_name: net.irc.send("KICK", buf_name, target, *kick_args)))
                 case "kick":
                     speak("/kick requires at least 1 argument", True)
                 case "me":
