@@ -46,8 +46,17 @@ class Network:
     def on_message(self, irc, command, hostmask, tags, args):
         buf_name = self.map_buffer_name(args[0], hostmask[0])
         msg = Message(hostmask, tags, command, args)
-        buf = self.buffers.get_or_create(buf_name)
+
+        # Only append the message if the buffer isn't already closed
+        if msg.is_part_by(self.irc.current_nick):
+            print(f"{repr(self)} should be hidden")
+            try: buf = self.buffers[buf_name]
+            # If there isn't an existing buffer, ignore the message
+            except KeyError: return
+        else: buf = self.buffers.get_or_create(buf_name)
+
         buf.append(msg)
+
         if self.active and self.buffers.current_name == buf:
             speak(repr(msg), False)
 

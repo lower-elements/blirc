@@ -12,6 +12,9 @@ class BufferManager:
     def __len__(self):
         return len(self.buffers)
 
+    def __getitem__(self, name):
+        return self.buffers[name]
+
     def new_tab(self, name, buf):
         self.tabs.append(name)
         buf.hidden = False

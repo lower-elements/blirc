@@ -28,6 +28,9 @@ class Message:
     def synthesize_ctcp(irc, target, *args):
         return Message((irc.current_nick, irc.ident, irc.realname), {}, "PRIVMSG", [target, f"\x01{' '.join(args)}\x01"])
 
+    def is_part_by(self, nick):
+        return self.command.upper() == "PART" and self.hostmask[0] == nick
+
     def __repr__(self):
         match self.command:
             case "JOIN":
