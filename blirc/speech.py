@@ -15,19 +15,13 @@ match sys.platform:
         from . import consts
         linux_speaker = speechd.Speaker(consts.NAME)
         linux_speaker.set_priority(speechd.Priority.TEXT)
-        last = perf_counter()
 
 def speak (text, interupt = True):
     match sys.platform:
         case "win32": tolk.speak(text, interupt)
         case "linux":
-            global last
-            elapsed = perf_counter() - last
-            if elapsed > 0.1:
-                if interupt:
-                    linux_speaker.cancel()
-                    linux_speaker.speak(text)
-                    last = perf_counter()
+            linux_speaker.cancel()
+            linux_speaker.speak(text)
         case "darwin": speaker.speak (text, interupt)
 
 def stop():
