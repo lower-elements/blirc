@@ -55,7 +55,8 @@ class UI:
             for event in events:
                 self.handle_event(event)
 
-            pygame.display.update()
+            # No rendering yet
+            # pygame.display.update()
 
     def handle_event(self, event):
         # Let the text input handle it if it wants
