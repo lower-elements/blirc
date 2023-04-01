@@ -45,17 +45,17 @@ class Message:
                     msg = f"{self.hostmask[0]} quit IRC"
             case "PRIVMSG" | "NOTICE" if self.args[-1].startswith('\x01'):
                 # CTCP
-                ctcp = self.args[-1].strip('\x01')
-                try:
-                    idx = ctcp.index(' ')
-                    command = ctcp[:idx]
-                except ValueError:
-                    command = ctcp
-                match command:
+                command, *args = self.args[-1].strip('\x01').split(maxsplit=1)
+                args = args[0] if args else None
+                match command.upper():
                     case "ACTION":
                         msg = f"* {self.hostmask[0]} {ctcp[idx+1:]}"
+                    case "VERSION" if args is not None:
+                        msg = f"{self.hostmask[0]} is running {args}"
+                    case _ if args is None:
+                        msg = f"CTCP {command} request from {self.hostmask[0]}"
                     case _:
-                        msg = f"{self.hostmask[0]}: CTCP {ctcp}"
+                        msg = f"{self.hostmask[0]}: [CTCP] {command} {args}"
             case "PRIVMSG":
                 msg = f"{self.hostmask[0]}: {self.args[-1]}"
             case "NOTICE":
