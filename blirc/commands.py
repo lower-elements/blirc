@@ -49,6 +49,8 @@ class CommandProcessor:
                     ui.shutdown(quit_msg=args)
                     pygame.quit()
                     sys.exit()
+                case "quote":
+                    ui.networks.with_current(lambda net: net.irc.quote(args))
                 case command:
                     speak(f"Unknown command {command}", True)
         else:
