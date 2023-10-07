@@ -52,7 +52,8 @@ class Message:
                 args = args[0] if args else None
                 match command.upper():
                     case "ACTION":
-                        msg = f"* {self.hostmask[0]} {ctcp[idx+1:]}"
+                        args = args if args is not None else ''
+                        msg = f"* {self.hostmask[0]} {args}"
                     case "VERSION" if args is not None:
                         msg = f"{self.hostmask[0]} is running {args}"
                     case _ if args is None:
